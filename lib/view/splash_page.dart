@@ -22,7 +22,7 @@ class _SplashPageState extends State<SplashPage> {
             width: width,
             child: Image.asset(
               "/Users/ashnasathar/recipeApp/flutter_application_1/assets/splashscreen.jpg",
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
             ),
           ),
           Center(

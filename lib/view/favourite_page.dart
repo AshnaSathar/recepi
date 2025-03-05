@@ -3,7 +3,7 @@ import 'package:flutter_application_1/constants/color_constants.dart';
 import 'package:flutter_application_1/constants/text_style.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../controller/save_list_controller.dart'; // Adjust the path as needed
+import '../controller/save_list_controller.dart';
 
 class FavouritePage extends StatefulWidget {
   const FavouritePage({super.key});
@@ -24,15 +24,6 @@ class _FavouritePageState extends State<FavouritePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        // leading: InkWell(
-        //   onTap: () {
-        //     context.go('/nav-page', extra: 0);
-        //   },
-        //   child: Icon(
-        //     Icons.arrow_back,
-        //     color: Colors.white,
-        //   ),
-        // ),
         backgroundColor: ColorConstants.primaryColor,
         title: Text(
           'Favourites',
@@ -45,8 +36,14 @@ class _FavouritePageState extends State<FavouritePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                      "/Users/ashnasathar/recipeApp/flutter_application_1/assets/empty.jpg"),
-                  Text("Empty")
+                    'assets/empty.jpg', // Make sure this is correct
+                    height: 200,
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    "No favourites added yet!",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
             )
@@ -59,9 +56,9 @@ class _FavouritePageState extends State<FavouritePage> {
                   direction: DismissDirection.endToStart,
                   background: Container(
                     color: Colors.red,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.centerRight,
-                    child: Icon(
+                    child: const Icon(
                       Icons.delete,
                       color: Colors.white,
                     ),
@@ -70,8 +67,9 @@ class _FavouritePageState extends State<FavouritePage> {
                     saveListController.removeRecipe(recipe['name']);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                          content: Text(
-                              '${recipe['name']} removed from favourites')),
+                        content:
+                            Text('${recipe['name']} removed from favourites'),
+                      ),
                     );
                   },
                   child: InkWell(
@@ -79,42 +77,54 @@ class _FavouritePageState extends State<FavouritePage> {
                       context.go('/product-details', extra: recipe);
                     },
                     child: Card(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 10),
                       color: Colors.white,
                       child: Row(
                         children: [
                           Container(
-                            height: height * .15,
-                            width: width * .35,
-                            child: Image.asset(
-                              recipe['image'],
-                              fit: BoxFit.fill,
+                            height: height * 0.15,
+                            width: width * 0.35,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(recipe['image']),
+                                fit: BoxFit.cover,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          SizedBox(width: 5),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   recipe['name'],
-                                  style: TextStyles.normalText
-                                      .copyWith(fontWeight: FontWeight.bold),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.timer_outlined),
-                                      Text(recipe['cookingTime']),
-                                      Spacer(),
-                                      Icon(Icons.star, color: Colors.amber),
-                                      Text(recipe['rating'].toString())
-                                    ],
+                                  style: TextStyles.normalText.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
                                   ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 5),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.timer_outlined, size: 16),
+                                    const SizedBox(width: 5),
+                                    Text(recipe['cookingTime'],
+                                        style: TextStyle(fontSize: 14)),
+                                    const Spacer(),
+                                    const Icon(Icons.star,
+                                        color: Colors.amber, size: 16),
+                                    const SizedBox(width: 5),
+                                    Text(recipe['rating'].toString(),
+                                        style: TextStyle(fontSize: 14)),
+                                  ],
                                 ),
                               ],
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),

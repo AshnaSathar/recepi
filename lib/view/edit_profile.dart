@@ -42,7 +42,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     dobController = TextEditingController(text: widget.dob);
     mobileController = TextEditingController(text: widget.mobile);
 
-    // Initialize profile image with existing image
     _currentProfileImage = widget.profileImage;
   }
 

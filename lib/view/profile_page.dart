@@ -20,16 +20,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         backgroundColor: ColorConstants.primaryColor,
         actions: [
           GestureDetector(
@@ -57,9 +49,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 });
               }
             },
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: const Text(
+            child: const Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Text(
                 "Edit Profile",
                 style: TextStyle(color: Colors.white),
               ),
@@ -67,44 +59,65 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Just display the profile image, no tap functionality
-              CircleAvatar(
-                radius: screenWidth * 0.18,
-                backgroundImage: profileImage.startsWith('assets/')
-                    ? AssetImage(profileImage) as ImageProvider
-                    : FileImage(File(profileImage)),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          double screenWidth = constraints.maxWidth;
+          double avatarRadius = screenWidth * 0.18;
+
+          if (avatarRadius > 100) avatarRadius = 100;
+
+          double fontSize = screenWidth < 400 ? 16 : 22;
+          double padding = screenWidth < 400 ? 12 : 16;
+
+          return Padding(
+            padding: EdgeInsets.all(padding),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: avatarRadius,
+                      backgroundImage: profileImage.startsWith('assets/')
+                          ? AssetImage(profileImage) as ImageProvider
+                          : FileImage(File(profileImage)),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    buildProfileInfo(Icons.email, email, fontSize),
+                    buildProfileInfo(Icons.calendar_today, dob, fontSize),
+                    buildProfileInfo(Icons.phone, mobile, fontSize),
+                  ],
+                ),
               ),
-              const SizedBox(height: 16),
-              Text(
-                name,
-                style:
-                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              buildProfileInfo(Icons.email, email),
-              buildProfileInfo(Icons.calendar_today, dob),
-              buildProfileInfo(Icons.phone, mobile),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget buildProfileInfo(IconData icon, String text) {
+  Widget buildProfileInfo(IconData icon, String text, double fontSize) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
           Icon(icon, color: Colors.blueAccent),
           const SizedBox(width: 10),
-          Text(text, style: const TextStyle(fontSize: 16)),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(fontSize: fontSize),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       ),
     );
