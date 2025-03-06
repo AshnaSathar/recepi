@@ -32,111 +32,112 @@ class RecipeSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.sizeOf(context).height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double screenWidth = constraints.maxWidth;
+    if (screenWidth > 1000) {
+      // Large screens (desktop) - 4 columns
+      return _buildGridView(4);
+    } else if (screenWidth > 600) {
+      // Medium screens (tablet) - 2 columns
+      return _buildGridView(2);
+    } else {
+      // Small screens (mobile) - horizontal list
+      return SizedBox(
+        height: 220, // Adjusted to reduce card height
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: recipes.length,
+          itemBuilder: (context, index) =>
+              _buildRecipeCard(context, recipes[index], isHorizontal: true),
+        ),
+      );
+    }
+  }
 
-        // Dynamically set sizes based on screen width
-        double cardWidth = screenWidth * 0.45; // Default for mobile
-        double imageHeight = height * 0.15;
-        double fontSize = 14;
+  Widget _buildGridView(int crossAxisCount) {
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        childAspectRatio: 3 / 4, // Adjust aspect ratio to control card shape
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
+      ),
+      itemCount: recipes.length,
+      itemBuilder: (context, index) =>
+          _buildRecipeCard(context, recipes[index]),
+    );
+  }
 
-        if (screenWidth > 1200) {
-          // Large screen (desktop)
-          cardWidth = screenWidth * 0.25;
-          imageHeight = height * 0.22;
-          fontSize = 18;
-        } else if (screenWidth > 800) {
-          // Medium screen (tablet)
-          cardWidth = screenWidth * 0.3;
-          imageHeight = height * 0.18;
-          fontSize = 16;
-        }
+  Widget _buildRecipeCard(BuildContext context, Map<String, dynamic> recipe,
+      {bool isHorizontal = false}) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double cardWidth = isHorizontal ? screenWidth * 0.45 : double.infinity;
+    double imageHeight =
+        isHorizontal ? 120 : 150; // Smaller height for horizontal cards
+    double fontSize = isHorizontal ? 14 : 16;
 
-        return SizedBox(
-          height: height * 0.32, // Overall slider height
-          width: screenWidth,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: recipes.length,
-            itemBuilder: (context, index) {
-              final recipe = recipes[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: SizedBox(
-                  width: cardWidth,
-                  child: Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Image Section
-                        Container(
-                          height: imageHeight,
-                          width: cardWidth,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(12),
-                            ),
-                            image: DecorationImage(
-                              image: AssetImage(recipe['image']),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-
-                        // Text and Info Section
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                recipe['name'],
-                                style: TextStyle(
-                                  fontSize: fontSize,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  const Icon(Icons.timer, size: 16),
-                                  Text(
-                                    ' ${recipe['cookingTime']}',
-                                    style: TextStyle(
-                                      fontSize: fontSize * 0.85,
-                                      color: Colors.grey[700],
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  const Icon(Icons.star,
-                                      color: Colors.amber, size: 16),
-                                  Text(
-                                    recipe['rating'].toString(),
-                                    style: TextStyle(fontSize: fontSize * 0.85),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+    return SizedBox(
+      width: isHorizontal ? cardWidth : null,
+      child: Card(
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: imageHeight,
+              decoration: BoxDecoration(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(12)),
+                image: DecorationImage(
+                  image: AssetImage(recipe['image']),
+                  fit: BoxFit.cover,
                 ),
-              );
-            },
-          ),
-        );
-      },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    recipe['name'],
+                    style: TextStyle(
+                      fontSize: fontSize,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(Icons.timer, size: 16),
+                      Text(
+                        ' ${recipe['cookingTime']}',
+                        style: TextStyle(
+                          fontSize: fontSize * 0.85,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                      const Spacer(),
+                      const Icon(Icons.star, color: Colors.amber, size: 16),
+                      Text(
+                        recipe['rating'].toString(),
+                        style: TextStyle(fontSize: fontSize * 0.85),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

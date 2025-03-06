@@ -9,15 +9,14 @@ import 'package:flutter_application_1/view/search_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-// Responsive font size helper function
 double getResponsiveFontSize(double baseSize, BuildContext context) {
   double screenWidth = MediaQuery.of(context).size.width;
   if (screenWidth > 1000) {
-    return baseSize * 1.4; // Larger text for large screens (like tablets)
+    return baseSize * 1.2;
   } else if (screenWidth > 600) {
-    return baseSize * 1.2; // Medium size for tablets
+    return baseSize * 1.2;
   } else {
-    return baseSize; // Default for phones
+    return baseSize;
   }
 }
 
@@ -93,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     SizedBox(height: height * 0.02),
-                    const RecipeSlider(),
+                    RecipeSlider(),
                     SizedBox(height: height * 0.03),
                     Row(
                       children: [
