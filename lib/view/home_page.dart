@@ -5,6 +5,7 @@ import 'package:flutter_application_1/controller/items_controller.dart';
 import 'package:flutter_application_1/view/category_slide.dart';
 import 'package:flutter_application_1/view/custom_drawer.dart';
 import 'package:flutter_application_1/view/search_bar.dart';
+import 'package:flutter_application_1/view/search_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -41,7 +42,21 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.white),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        actions: [
+          InkWell(
+              onTap: () {
+                //
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SearchPage(),
+                    ));
+              },
+              child: Icon(Icons.search))
+        ],
+      ),
       drawer: const CustomDrawer(),
       backgroundColor: Colors.white,
       body: SafeArea(
