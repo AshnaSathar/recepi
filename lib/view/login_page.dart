@@ -129,16 +129,6 @@ class _LoginPageState extends State<LoginPage> {
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white)),
                       ),
-
-                      // TextButton(
-                      //   onPressed: () {
-                      //     context.push('/sign-up');
-                      //   },
-                      //   child: Text("Sign Up",
-                      //       style: TextStyles.h6.copyWith(
-                      //           fontWeight: FontWeight.w600,
-                      //           color: Colors.white)),
-                      // ),
                     ],
                   ),
                   SizedBox(height: height * .03),
