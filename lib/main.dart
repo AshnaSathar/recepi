@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controller/forgetController.dart';
 import 'package:flutter_application_1/controller/items_controller.dart';
+import 'package:flutter_application_1/controller/login_controller.dart';
+import 'package:flutter_application_1/controller/profile_controller.dart';
 import 'package:flutter_application_1/controller/recipe_controller.dart';
+import 'package:flutter_application_1/controller/register_controller.dart';
 import 'package:flutter_application_1/controller/save_list_controller.dart';
+import 'package:flutter_application_1/controller/update_profile_controller.dart';
+import 'package:flutter_application_1/view/admin/dashboard.dart';
 import 'package:flutter_application_1/view/categories_page.dart';
 import 'package:flutter_application_1/view/home_page.dart';
 import 'package:flutter_application_1/view/nav_page.dart';
@@ -18,9 +24,12 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => SaveListController()),
         ChangeNotifierProvider(create: (_) => RecipeController()),
-
-        ChangeNotifierProvider(
-            create: (_) => ItemsController()), // Providing the controller
+        ChangeNotifierProvider(create: (_) => RegisterController()),
+        ChangeNotifierProvider(create: (_) => LoginController()),
+        ChangeNotifierProvider(create: (_) => ProfileController()),
+        ChangeNotifierProvider(create: (_) => UpdateProfileController()),
+        ChangeNotifierProvider(create: (_) => ForgetController()),
+        ChangeNotifierProvider(create: (_) => ItemsController()),
       ],
       child: MyApp(),
     ),
@@ -68,18 +77,17 @@ final GoRouter _router = GoRouter(initialLocation: '/', routes: [
   GoRoute(
     path: '/product-details',
     pageBuilder: (context, state) {
-      final recipe =
-          state.extra as Map<String, dynamic>; // Extract recipe from extra
+      final recipe = state.extra as Map<String, dynamic>;
 
       return CustomTransitionPage(
         key: state.pageKey,
-        child: ProductDetailPage(recipe: recipe), // Pass recipe to page
+        child: ProductDetailPage(recipe: recipe),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(
             opacity: animation,
             child: SlideTransition(
               position: Tween<Offset>(
-                begin: Offset(1.0, 0.0), // Starts from right
+                begin: Offset(1.0, 0.0),
                 end: Offset.zero,
               ).animate(animation),
               child: child,
@@ -99,7 +107,7 @@ final GoRouter _router = GoRouter(initialLocation: '/', routes: [
           opacity: animation,
           child: SlideTransition(
             position: Tween<Offset>(
-              begin: Offset(1.0, 0.0), // Starts from right
+              begin: Offset(1.0, 0.0),
               end: Offset.zero,
             ).animate(animation),
             child: child,

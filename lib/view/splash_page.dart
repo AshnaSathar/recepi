@@ -21,28 +21,14 @@ class _SplashPageState extends State<SplashPage> {
             height: height,
             width: width,
             child: Image.asset(
-              "/Users/ashnasathar/recipeApp/flutter_application_1/assets/splashscreen.jpg",
-              fit: BoxFit.cover,
+              "/Users/ashnasathar/recipeApp/flutter_application_1/assets/splash.jpeg",
+              fit: BoxFit.fill,
             ),
           ),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Let's Cook",
-                    style: TextStyle(
-                        fontFamily: 'Sigmar',
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            offset: Offset(3, 3),
-                            blurRadius: 8,
-                            color: Colors.white.withOpacity(0.5),
-                          ),
-                        ]))
-              ],
+              children: [],
             ),
           ),
           Positioned(

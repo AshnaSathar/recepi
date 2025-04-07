@@ -1,55 +1,48 @@
-class Recipe {
-  final String name;
-  final String description;
-  final double prepTime;
-  final String cuisine;
-  final String instructions;
+class RecipeModel {
+  final String? name;
+  final String? description;
+  final String? prepTime;
+  final double? calories;
+  final List<String>? recipeInstructions; // Changed from String to List<String>
+  final double? proteinContent;
+  final double? similarityScore;
+  final String? matchType;
 
-  Recipe({
-    required this.name,
-    required this.description,
-    required this.prepTime,
-    required this.cuisine,
-    required this.instructions,
+  RecipeModel({
+    this.name,
+    this.description,
+    this.prepTime,
+    this.calories,
+    this.recipeInstructions,
+    this.proteinContent,
+    this.similarityScore,
+    this.matchType,
   });
 
-  factory Recipe.fromJson(Map<String, dynamic> json) {
-    return Recipe(
-      name: json['name'],
-      description: json['description'],
-      prepTime: json['prep_time'].toDouble(),
-      cuisine: json['cuisine'],
-      instructions: json['instructions'],
+  factory RecipeModel.fromJson(Map<String, dynamic> json) {
+    return RecipeModel(
+      name: json['Name'],
+      description: json['Description'],
+      prepTime: json['PrepTime'],
+      calories: json['Calories']?.toDouble(),
+      recipeInstructions: _parseRecipeInstructions(json['RecipeInstructions']),
+      proteinContent: json['ProteinContent']?.toDouble(),
+      similarityScore: json['SimilarityScore']?.toDouble(),
+      matchType: json['MatchType'],
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'description': description,
-      'prep_time': prepTime,
-      'cuisine': cuisine,
-      'instructions': instructions,
-    };
-  }
-}
-
-class RecipeList {
-  final List<Recipe> recipes;
-
-  RecipeList({required this.recipes});
-
-  factory RecipeList.fromJson(Map<String, dynamic> json) {
-    return RecipeList(
-      recipes: (json['recipes'] as List)
-          .map((recipe) => Recipe.fromJson(recipe))
-          .toList(),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'recipes': recipes.map((recipe) => recipe.toJson()).toList(),
-    };
+  static List<String> _parseRecipeInstructions(dynamic instructions) {
+    if (instructions is List) {
+      return instructions.map((e) => e.toString()).toList();
+    } else if (instructions is String) {
+      return instructions
+          .replaceAll('c("', '') // Remove 'c("'
+          .replaceAll('")', '') // Remove closing '")'
+          .split('", "') // Split into a list
+          .map((e) => e.trim()) // Trim spaces
+          .toList();
+    }
+    return [];
   }
 }

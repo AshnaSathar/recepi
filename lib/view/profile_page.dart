@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_application_1/view/edit_profile.dart';
 import 'package:flutter_application_1/constants/color_constants.dart';
+import 'package:flutter_application_1/controller/profile_controller.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -11,96 +13,110 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String name = "Ashna Sathar";
-  String email = "ashnasathar@gmail.com";
-  String dob = "January 25, 2000";
-  String mobile = "+91 8848687997";
-  String profileImage =
-      '/Users/ashnasathar/recipeApp/flutter_application_1/assets/AMP_imghappy-girl-taking-a-selfie_5f4a2e4438bf3.jpeg';
+  @override
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      context.read<ProfileController>().fetchProfile();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: ColorConstants.primaryColor,
-        actions: [
-          GestureDetector(
-            onTap: () async {
-              final updatedData = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditProfilePage(
-                    name: name,
-                    email: email,
-                    dob: dob,
-                    mobile: mobile,
-                    profileImage: profileImage,
+    return Consumer<ProfileController>(
+      builder: (context, controller, child) {
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: ColorConstants.primaryColor,
+            actions: [
+              GestureDetector(
+                onTap: () async {
+                  final updatedData = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditProfilePage(
+                        name: controller.profile?.email ?? '',
+                        email: controller.profile?.email ?? '',
+                        dob: controller.profile?.dob ?? '',
+                        mobile: controller.profile?.phone ?? '',
+                        profileImage: controller.profile?.photoUrl ?? '',
+                        password: '',
+                      ),
+                    ),
+                  );
+                  if (updatedData != null) {
+                    controller.updateProfile(updatedData);
+                  }
+                },
+                child: const Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text(
+                    "Edit Profile",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              double screenWidth = constraints.maxWidth;
+              double avatarRadius = screenWidth * 0.18;
+
+              if (avatarRadius > 100) avatarRadius = 100;
+
+              double fontSize = screenWidth < 400 ? 16 : 22;
+              double padding = screenWidth < 400 ? 12 : 16;
+
+              if (controller.isLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (controller.profile == null) {
+                return const Center(child: Text("Failed to load profile"));
+              }
+
+              return Padding(
+                padding: EdgeInsets.all(padding),
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: avatarRadius,
+                          backgroundImage: controller.profile!.photoUrl !=
+                                      null &&
+                                  controller.profile!.photoUrl!.isNotEmpty
+                              ? FileImage(File(controller.profile!.photoUrl!))
+                              : const AssetImage('assets/default_avatar.png')
+                                  as ImageProvider,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          controller.profile!.email,
+                          style: TextStyle(
+                            fontSize: fontSize,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        buildProfileInfo(
+                            Icons.email, controller.profile!.email, fontSize),
+                        buildProfileInfo(Icons.calendar_today,
+                            controller.profile!.dob, fontSize),
+                        buildProfileInfo(
+                            Icons.phone, controller.profile!.phone, fontSize),
+                      ],
+                    ),
                   ),
                 ),
               );
-
-              if (updatedData != null) {
-                setState(() {
-                  name = updatedData["name"];
-                  email = updatedData["email"];
-                  dob = updatedData["dob"];
-                  mobile = updatedData["mobile"];
-                  profileImage = updatedData["profileImage"] ?? profileImage;
-                });
-              }
             },
-            child: const Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Text(
-                "Edit Profile",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
           ),
-        ],
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          double screenWidth = constraints.maxWidth;
-          double avatarRadius = screenWidth * 0.18;
-
-          if (avatarRadius > 100) avatarRadius = 100;
-
-          double fontSize = screenWidth < 400 ? 16 : 22;
-          double padding = screenWidth < 400 ? 12 : 16;
-
-          return Padding(
-            padding: EdgeInsets.all(padding),
-            child: Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: avatarRadius,
-                      backgroundImage: profileImage.startsWith('assets/')
-                          ? AssetImage(profileImage) as ImageProvider
-                          : FileImage(File(profileImage)),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      name,
-                      style: TextStyle(
-                        fontSize: fontSize,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    buildProfileInfo(Icons.email, email, fontSize),
-                    buildProfileInfo(Icons.calendar_today, dob, fontSize),
-                    buildProfileInfo(Icons.phone, mobile, fontSize),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+        );
+      },
     );
   }
 

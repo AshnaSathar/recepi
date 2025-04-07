@@ -1,162 +1,108 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/constants/color_constants.dart';
-import 'package:flutter_application_1/constants/text_style.dart';
-import 'package:flutter_application_1/controller/save_list_controller.dart';
-import 'package:provider/provider.dart';
+import '../model/recipe_model.dart';
+import '../constants/color_constants.dart';
 
-class ItemRecipe extends StatefulWidget {
-  final recipe;
+class ItemRecipe extends StatelessWidget {
+  final RecipeModel recipe;
 
   const ItemRecipe({super.key, required this.recipe});
 
   @override
-  State<ItemRecipe> createState() => _ItemRecipe();
-}
-
-class _ItemRecipe extends State<ItemRecipe> {
-  bool isSaved = false;
-
-  @override
-  void initState() {
-    super.initState();
-    final saveListController = context.read<SaveListController>();
-    isSaved = saveListController.isRecipeSaved(widget.recipe.name);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.sizeOf(context).height;
-
     return Scaffold(
-      body: Column(
-        children: [
-          Stack(
+      appBar: AppBar(
+        backgroundColor: ColorConstants.primaryColor,
+        title: Text(recipe.name ?? "Recipe"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: height * .4,
-                color: const Color.fromARGB(255, 226, 225, 225),
-              ),
-              Positioned(
-                  left: 02,
-                  child: InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: Icon(Icons.arrow_back))),
-              Positioned(
-                right: 0,
-                top: 0,
-                child: IconButton(
-                  onPressed: toggleSave,
-                  icon: Icon(
-                    isSaved ? Icons.bookmark : Icons.bookmark_border,
-                    color: Colors.amber,
-                  ),
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.25,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
-            ],
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
-                  blurRadius: 6,
-                  spreadRadius: 2,
-                  offset: const Offset(0, 4),
+              const SizedBox(height: 16),
+              Text(
+                recipe.name ?? "Recipe Name",
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
-            ),
-            margin: const EdgeInsets.all(8),
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.recipe.name,
-                  style: TextStyles.h6,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.timer_outlined,
-                      color: const Color.fromARGB(255, 0, 112, 4),
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      "${widget.recipe.prepTime} min",
-                      style: TextStyles.normalText
-                          .copyWith(color: ColorConstants.primaryColor),
-                    ),
-                    Spacer(),
-                    Text(
-                      widget.recipe.cuisine,
-                      style: TextStyles.normalText
-                          .copyWith(color: ColorConstants.primaryColor),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Tab(
-                    child: Text(
-                      "Description",
-                      style: TextStyles.h6,
-                    ),
-                  ),
                   Text(
-                    widget.recipe.description,
-                    style: const TextStyle(fontSize: 16, height: 1.5),
-                    textAlign: TextAlign.justify,
+                    "Prep Time: ${recipe.prepTime ?? 'N/A'}",
+                    style: const TextStyle(fontSize: 16),
                   ),
-                  const SizedBox(height: 10),
-                  Tab(
-                    child: Text(
-                      "Instruction",
-                      style: TextStyles.h6,
-                    ),
+                  IconButton(
+                    icon: const Icon(Icons.favorite_border, color: Colors.red),
+                    onPressed: () {
+                      //  save action here
+                    },
                   ),
-                  Text(
-                    widget.recipe.instructions,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w500),
-                    textAlign: TextAlign.justify,
-                  ),
-                  const SizedBox(height: 20),
                 ],
               ),
-            ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Calories: ${recipe.calories?.toStringAsFixed(2) ?? 'N/A'} kcal",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  Text(
+                    "Protein: ${recipe.proteinContent?.toStringAsFixed(2) ?? 'N/A'} g",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Similarity Score: ${recipe.similarityScore?.toStringAsFixed(2) ?? 'N/A'} ",
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Match Type: ${recipe.matchType ?? 'N/A'} ",
+                style: const TextStyle(fontSize: 16),
+              ),
+              const Text(
+                "Instructions:",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              recipe.recipeInstructions != null &&
+                      recipe.recipeInstructions!.isNotEmpty
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: recipe.recipeInstructions!.map((step) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Text("- $step",
+                              style: const TextStyle(fontSize: 16)),
+                        );
+                      }).toList(),
+                    )
+                  : const Text("No instructions available",
+                      style: TextStyle(fontSize: 16)),
+            ],
           ),
-        ],
+        ),
       ),
     );
-  }
-
-  void toggleSave() {
-    setState(() {
-      isSaved = !isSaved;
-    });
-
-    final saveListController = context.read<SaveListController>();
-    if (isSaved) {
-      saveListController.addRecipe(widget.recipe);
-      showSnackBar("${widget.recipe['name']} added to saved list");
-    } else {
-      saveListController.removeRecipe(widget.recipe['name']);
-      showSnackBar("${widget.recipe['name']} removed from saved list");
-    }
-  }
-
-  void showSnackBar(String message) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/view/language_Selection_page.dart';
+import 'package:flutter_application_1/view/setting/helps_and_support.dart';
+import 'package:flutter_application_1/view/setting/refer_and_earn.dart';
+import 'package:flutter_application_1/view/terms_and_privacy.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -35,8 +38,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 // Profile Picture
                 CircleAvatar(
                   radius: 35,
-                  backgroundImage: AssetImage(
-                      'assets/profile_placeholder.png'), // Replace with actual image
+                  // backgroundImage: AssetImage(
+                  //     'assets/profile_placeholder.png'), // Replace with actual image
                 ),
                 const SizedBox(width: 16),
                 // Name & Phone
@@ -45,7 +48,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        "Ashna Sathar", // Replace with actual name
+                        "User name", // Replace with actual name
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -55,7 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       Row(
                         children: [
                           const Text(
-                            "+91 8848687997", // Replace with actual number
+                            "+91 76373637262", // Replace with actual number
                             style: TextStyle(fontSize: 14, color: Colors.grey),
                           ),
                           const SizedBox(width: 8),
@@ -117,20 +120,33 @@ class _SettingsPageState extends State<SettingsPage> {
                   icon: Icons.card_giftcard,
                   title: "Refer & Earn",
                   onTap: () {
-                    // Navigate to Refer & Earn
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ReferAndEarn(),
+                        ));
                   },
                 ),
                 settingsItem(
                   icon: Icons.help,
                   title: "Help & Support",
                   onTap: () {
-                    // Navigate to Help & Support
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HelpsAndSupport(),
+                        ));
                   },
                 ),
                 settingsItem(
                   icon: Icons.description,
                   title: "Terms & Conditions",
                   onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TermsAndPrivacy(),
+                        ));
                     // Navigate to Terms & Conditions
                   },
                 ),

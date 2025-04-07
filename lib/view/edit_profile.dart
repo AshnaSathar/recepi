@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/color_constants.dart';
+import 'package:flutter_application_1/controller/update_profile_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class EditProfilePage extends StatefulWidget {
   final String name;
@@ -11,25 +13,27 @@ class EditProfilePage extends StatefulWidget {
   final String dob;
   final String mobile;
   final String profileImage;
+  final String password;
 
-  const EditProfilePage({
-    super.key,
-    required this.name,
-    required this.email,
-    required this.dob,
-    required this.mobile,
-    required this.profileImage,
-  });
+  const EditProfilePage(
+      {super.key,
+      required this.name,
+      required this.email,
+      required this.dob,
+      required this.mobile,
+      required this.profileImage,
+      required this.password});
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  late TextEditingController nameController;
-  late TextEditingController emailController;
-  late TextEditingController dobController;
-  late TextEditingController mobileController;
+  late TextEditingController nameController = TextEditingController();
+  late TextEditingController emailController = TextEditingController();
+  late TextEditingController dobController = TextEditingController();
+  late TextEditingController mobileController = TextEditingController();
+  late TextEditingController passwordController = TextEditingController();
 
   File? _newProfileImage;
   String? _currentProfileImage;
@@ -41,6 +45,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     emailController = TextEditingController(text: widget.email);
     dobController = TextEditingController(text: widget.dob);
     mobileController = TextEditingController(text: widget.mobile);
+    passwordController = TextEditingController(text: widget.password);
 
     _currentProfileImage = widget.profileImage;
   }
@@ -51,6 +56,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     emailController.dispose();
     dobController.dispose();
     mobileController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
@@ -66,15 +72,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  void saveProfile() {
-    GoRouter.of(context).pop({
-      "name": nameController.text,
-      "email": emailController.text,
-      "dob": dobController.text,
-      "mobile": mobileController.text,
-      "profileImage": _newProfileImage?.path ??
-          _currentProfileImage, // Send updated image path if available
-    });
+  void saveProfile() async {
+    bool success =
+        await Provider.of<UpdateProfileController>(context, listen: false)
+            .updateProfile(
+                email: emailController.text,
+                password: passwordController.text,
+                dob: dobController.text,
+                phone: mobileController.text,
+                username: nameController.text);
   }
 
   @override

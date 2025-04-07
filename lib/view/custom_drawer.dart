@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/color_constants.dart';
+import 'package:flutter_application_1/view/feedback_user.dart';
 import 'package:flutter_application_1/view/settings.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -11,9 +12,8 @@ class CustomDrawer extends StatelessWidget {
       child: Column(
         children: [
           UserAccountsDrawerHeader(
-            accountName:
-                const Text("Ashna Sathar"), // Replace with actual user data
-            accountEmail: const Text("ashnasathar@gmail.com"),
+            accountName: const Text("User"),
+            accountEmail: const Text("user@gmail.com"),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
               child: Icon(Icons.person, size: 40, color: Colors.grey.shade700),
@@ -25,6 +25,17 @@ class CustomDrawer extends StatelessWidget {
             title: const Text("Home"),
             onTap: () {
               Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.feedback),
+            title: const Text("Feedback"),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FeedbackUser(),
+                  ));
             },
           ),
           ListTile(
@@ -42,7 +53,9 @@ class CustomDrawer extends StatelessWidget {
             leading: const Icon(Icons.logout),
             title: const Text("Logout"),
             onTap: () {
-              // Handle logout logic here
+              () {
+                Navigator.popUntil(context, (route) => route.isFirst);
+              };
             },
           ),
         ],
