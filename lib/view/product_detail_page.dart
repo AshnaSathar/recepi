@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailPage extends StatefulWidget {
-  final Map<String, dynamic> recipe;
+  final recipe;
 
   const ProductDetailPage({super.key, required this.recipe});
 

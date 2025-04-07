@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/items_controller.dart';
+import 'package:flutter_application_1/controller/recipe_controller.dart';
 import 'package:flutter_application_1/controller/save_list_controller.dart';
 import 'package:flutter_application_1/view/categories_page.dart';
 import 'package:flutter_application_1/view/home_page.dart';
@@ -16,6 +17,8 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => SaveListController()),
+        ChangeNotifierProvider(create: (_) => RecipeController()),
+
         ChangeNotifierProvider(
             create: (_) => ItemsController()), // Providing the controller
       ],

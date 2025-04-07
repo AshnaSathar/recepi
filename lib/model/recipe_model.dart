@@ -1,22 +1,3 @@
-class RecipeList {
-  final List<Recipe> recipes;
-
-  RecipeList({required this.recipes});
-
-  factory RecipeList.fromJson(Map<String, dynamic> json) {
-    var recipesList = json['recipes'] as List;
-    List<Recipe> recipes =
-        recipesList.map((item) => Recipe.fromJson(item)).toList();
-    return RecipeList(recipes: recipes);
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'recipes': recipes.map((recipe) => recipe.toJson()).toList(),
-    };
-  }
-}
-
 class Recipe {
   final String name;
   final String description;
@@ -34,11 +15,11 @@ class Recipe {
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
     return Recipe(
-      name: json['name'] ?? '',
-      description: json['description'] ?? '',
-      prepTime: (json['prep_time'] ?? 0).toDouble(),
-      cuisine: json['cuisine'] ?? '',
-      instructions: json['instructions'] ?? '',
+      name: json['name'],
+      description: json['description'],
+      prepTime: json['prep_time'].toDouble(),
+      cuisine: json['cuisine'],
+      instructions: json['instructions'],
     );
   }
 
@@ -49,6 +30,26 @@ class Recipe {
       'prep_time': prepTime,
       'cuisine': cuisine,
       'instructions': instructions,
+    };
+  }
+}
+
+class RecipeList {
+  final List<Recipe> recipes;
+
+  RecipeList({required this.recipes});
+
+  factory RecipeList.fromJson(Map<String, dynamic> json) {
+    return RecipeList(
+      recipes: (json['recipes'] as List)
+          .map((recipe) => Recipe.fromJson(recipe))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'recipes': recipes.map((recipe) => recipe.toJson()).toList(),
     };
   }
 }
